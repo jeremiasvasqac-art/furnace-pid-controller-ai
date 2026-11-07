@@ -1,0 +1,5 @@
+# Perfil de ejemplo para:  python horno_pc.py cargar COM5 perfil_ejemplo.txt --ranura 2
+# temp_C, rampa_min, meseta_min   (máximo 9 tramos por ranura)
+100, 10, 15
+180, 15, 30
+60, 30, 0

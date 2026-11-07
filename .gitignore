@@ -1,0 +1,17 @@
+# Build outputs of the PC test bench (regenerate with banco/correr_banco.ps1)
+banco/salida/
+
+# AI dataset (~250 MB, regenerate with: python ia/generar_datos.py 900 2026)
+ia/datos/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Proteus workspace files and automatic backups
+*.workspace
+Project Backups/
+
+# Internal working notes (not part of the submission)
+HANDOFF_v2.md
+documento/
