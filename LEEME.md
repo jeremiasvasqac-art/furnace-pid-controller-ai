@@ -170,8 +170,8 @@ La compilación `real` es la del 16F1847 (todo); `r1827` es la del 16F1827 (sin 
 
 ## 7. Probar en Proteus 9.02 (PIC16F1827)
 
-1. Compilar con `SIMULAR_SENSORES=1` (y `AUTOARRANQUE` 0 o 1).
-2. U2 = PIC16F1827, **Program File** = el `.hex`, **Clock** = 4 MHz.
+1. El firmware ya compilado para Proteus está en `hardware/horno_proteus.hex` (16F1827, `SIMULAR_SENSORES=1`, `AUTOARRANQUE=1`, `-Os`). Para cambiar opciones, recompilar con `SIMULAR_SENSORES=1` y reemplazar ese archivo.
+2. U2 = PIC16F1827, **Program File** = `horno_proteus.hex` (solo el nombre, sin carpeta: Proteus lo busca junto al `.pdsprj`), **Clock** = 4 MHz. No usar una ruta absoluta ni la carpeta temporal de VSM Studio (`AppData\Local\Temp\VSM Studio\...`): en otra computadora no existe y la simulación no arranca.
 3. **VIRTUAL TERMINAL:** RXD al pin 8 (TX), TXD al pin 7 (RX), 9600 baudios.
 4. Al arrancar debe salir `HORNO PWM rev D - PIC16F1827`, `FW 2.0;RST=POR`, el perfil y el encabezado de 14 columnas.
 5. **Osciloscopio** en el pin 9: PWM de 0 a 5 V a 244 Hz.

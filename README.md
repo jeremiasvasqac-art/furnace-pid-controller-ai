@@ -9,6 +9,7 @@ A PCB that controls an electric furnace with a PID loop, reads five type-K therm
 | Path | Contents |
 |---|---|
 | `hardware/PCB_horno_industrial_revD.pdsprj` | Proteus 9 project: schematic and PCB layout (revision D, 87.5 × 80 mm, 2 layers, no DRC/CRC errors) |
+| `hardware/horno_proteus.hex` | Firmware compiled for the Proteus simulation (PIC16F1827, `SIMULAR_SENSORES=1`); U2's Program File points to it |
 | `hardware/bill_of_materials.csv` | Bill of materials exported from Proteus |
 | `hardware/gerber_revD.zip` | Manufacturing files: Gerber (top/bottom copper, silkscreen, solder mask, paste, profile), drill files and IPC netlist |
 | `horno_pwm_16f18x7.c` | Firmware for PIC16F1827 / PIC16F1847 (MPLAB XC8) |
