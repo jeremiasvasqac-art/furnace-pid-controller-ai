@@ -29,6 +29,14 @@ import time
 BAUDIOS = 9600
 COLUMNAS_V1 = ["seg", "sp", "prom", "pwm", "T1", "T2", "T3", "T4", "T5", "est"]
 COLUMNAS_V2 = COLUMNAS_V1 + ["ctl", "desc", "cod", "vdd"]
+# Diagnóstico de la IA: clase que manda el firmware ("IA;n"), nombre y qué debe hacer el operador.
+AVISOS_IA = {
+    0: ("normal", ""),
+    1: ("resistencia abierta", "revisar la resistencia y su cableado"),
+    2: ("MOSFET o relé en corto", "cortar la alimentación de 12 V"),
+    4: ("termopar congelado", "revisar o reemplazar el módulo convertidor"),
+    5: ("termopar con deriva", "recalibrar o cambiar el termopar"),
+}
 FALLAS = {
     1: "sobretemperatura",
     2: "sensores insuficientes",
@@ -70,6 +78,16 @@ def leer_telemetria(renglon: str):
             except ValueError:
                 return None
     return d
+
+
+def leer_aviso_ia(renglon: str):
+    """Devuelve (clase, nombre, acción) si el renglón es un aviso 'IA;n'; si no, None."""
+    partes = renglon.strip().split(";")
+    if len(partes) != 2 or partes[0] != "IA" or not partes[1].isdecimal():
+        return None
+    clase = int(partes[1])
+    nombre, accion = AVISOS_IA.get(clase, (f"clase {clase} desconocida", "revisar el firmware"))
+    return clase, nombre, accion
 
 
 def leer_perfil(ruta: str):
@@ -143,6 +161,7 @@ class Grafica:
                                                         gridspec_kw={"height_ratios": [3, 1]})
         self.fig.canvas.manager.set_window_title("Horno PWM")
         self.datos = []
+        self.aviso_ia = ""
 
     def agregar(self, d):
         self.datos.append(d)
@@ -166,6 +185,8 @@ class Grafica:
         titulo = f"estado {u['est']}  ·  {u['prom']} °C  ·  PWM {u['pwm'] * 100 // 1023} %"
         if u.get("cod"):
             titulo += f"  ·  FALLA {u['cod']}: {FALLAS.get(u['cod'], '?')}"
+        if self.aviso_ia:
+            titulo += f"  ·  AVISO IA: {self.aviso_ia}"
         self.ax_t.set_title(titulo)
         self.ax_p.plot(x, [d["pwm"] * 100 / 1023 for d in self.datos], color="tab:red")
         self.ax_p.set_ylabel("PWM %")
@@ -182,7 +203,7 @@ class Grafica:
 
 # ---------------------------------------------------------------- comandos
 class Registro:
-    """Guarda la telemetría en CSV y avisa de fallas y descartes."""
+    """Guarda la telemetría en CSV y avisa de fallas, descartes y diagnósticos de la IA."""
 
     def __init__(self, ruta_csv, grafica):
         self.csv = None
@@ -202,6 +223,12 @@ class Registro:
                 print(f"  {r}")
             if r.startswith("F;") and r[2:].isdigit():
                 print(f"  *** FALLA {r[2:]}: {FALLAS.get(int(r[2:]), '?')}")
+            aviso = leer_aviso_ia(r)
+            if aviso:
+                clase, nombre, accion = aviso
+                print("  *** IA: diagnóstico normal" if clase == 0 else f"  *** AVISO IA: {nombre}. Acción: {accion}.")
+                if self.grafica:
+                    self.grafica.aviso_ia = "" if clase == 0 else nombre
             return
         self.n += 1
         if self.csv:
