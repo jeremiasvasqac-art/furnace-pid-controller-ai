@@ -1,0 +1,32 @@
+REPRODUCTION: 45 shorted test runs
+  AI detected 28 (62%), median 98 s
+  Rules detected 45 (100%), median 130 s
+
+MISSED BY THE AI: 17 runs
+  run  rule_s latch_cod checks_before_latch checks_named_short final_streak | AI_with_rule5_off_s
+    98     97         1                  10                  4            4 | None
+   224     74         1                   7                  3            3 | None
+   230    108         1                  11                  0            0 | None
+   242     82         1                   8                  4            4 | None
+   248     64         5                   7                  3            3 | 91
+   272     60         5                   6                  4            4 | 79
+   320     59         5                   6                  3            3 | 81
+   326     75         5                   8                  5            5 | 84
+   350     72         5                   7                  5            5 | 72
+   398     59         5                   6                  3            3 | 82
+   452     99         5                  10                  5            5 | 100
+   506     51         5                   6                  4            4 | 70
+   536     91         5                   9                  6            5 | 96
+   632     64         5                   7                  5            5 | 70
+   638     52         5                   5                  3            3 | 76
+   776     55         1                   5                  0            0 | None
+   806     83         5                   9                  5            5 | 91
+
+  latched by the rules before any AI warning: 17 of 17
+  had fewer than 6 AI checks before the latch: 2 of 17
+  were on a live 'shorted' streak when the rules latched: 15 of 17
+  rule latency in missed runs: median 72 s
+
+COUNTERFACTUAL (rule 5 disabled, other rules active): AI detected 40 of 45 (89%)
+  median 94 s
+  of the 17 missed runs, AI now detects 12
